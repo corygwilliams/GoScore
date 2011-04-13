@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.Log;
@@ -32,7 +29,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-
 
 /**
  * A simple wrapper around a Camera and a SurfaceView that renders a centered preview of the Camera
@@ -47,7 +43,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
     Size mPreviewSize;
     List<Size> mSupportedPreviewSizes;
     Camera mCamera;
-    View mOverlay;
+    public View mOverlay;
 
     Preview(Context context) {
         super(context);
@@ -55,38 +51,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView);
         
-        mOverlay = new View(context) {
-            @Override
-            protected void onDraw(Canvas canvas) {
-            	super.onDraw(canvas);
-            	int height = canvas.getHeight();
-            	int width = canvas.getWidth();
-            	int box_width = (width - height) / 2;
-            	if (box_width <= 100) {
-            		box_width = 100;
-            	}
-            	Paint paint = new Paint();
-            	paint.setColor(Color.GRAY);
-            	paint.setAlpha(128);
-            	paint.setStyle(Paint.Style.FILL);
-            	canvas.drawRect(0, 0, box_width, height, paint);
-            	canvas.drawRect(width - box_width, 0, width, height, paint);
-            	
-            	float gridStep = ((float)height) / 40;
-            	float gridStart = gridStep * 2;
-            	float gridEnd = gridStep * 38;
-            	paint.setColor(Color.RED);
-            	for (int i = 1; i < 20; i++) {
-            		float offset = i * 2 * gridStep;
-            		// vertical line
-            		canvas.drawLine(box_width + offset, gridStart, 
-            				box_width + offset, gridEnd, paint);
-            		// horizontal line
-            		canvas.drawLine(box_width + gridStart, offset,
-            				box_width + gridEnd, offset, paint);
-            	}
-            }
-        };
+        mOverlay = new CameraOverlay(context);
         addView(mOverlay);
 
         // Install a SurfaceHolder.Callback so we get notified when the
