@@ -12,9 +12,10 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 
 public class GoScoreTop extends Activity implements OnClickListener {
-	protected Camera mCamera;
-	protected Preview mPreview;
-	protected PreviewProcessor mProcessor;
+	private Camera mCamera;
+	private Preview mPreview;
+	private PreviewProcessor mProcessor;
+	private CameraOverlay mOverlay;
 	
     /** Called when the activity is first created. */
     @Override
@@ -26,10 +27,15 @@ public class GoScoreTop extends Activity implements OnClickListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
         setContentView(R.layout.main);
+        FrameLayout picFrameLayout = ((FrameLayout) findViewById(R.id.picFrameLayout));
         mPreview = new Preview(this);
-        ((FrameLayout) findViewById(R.id.picFrameLayout)).addView(mPreview, 0);
-        mProcessor = new PreviewProcessor((CameraOverlay) mPreview.mOverlay);
-        findViewById(R.id.imageButton1).setOnClickListener(this);
+        picFrameLayout.addView(mPreview, 0);
+        
+        mOverlay = new CameraOverlay(this);
+        picFrameLayout.addView(mOverlay);
+        
+        mProcessor = new PreviewProcessor((CameraOverlay) mOverlay);
+        findViewById(R.id.shutterButton).setOnClickListener(this);
     }
     
     @Override
@@ -50,6 +56,6 @@ public class GoScoreTop extends Activity implements OnClickListener {
     }
 
 	public void onClick(View v) {
-		mPreview.mCamera.setOneShotPreviewCallback(mProcessor);
+		mPreview.setOneShotPreviewCallback(mProcessor);
 	}
 }

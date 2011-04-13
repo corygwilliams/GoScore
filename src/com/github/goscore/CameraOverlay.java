@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 public class CameraOverlay extends View {
-    Bitmap mBoardImage;
+    private Bitmap mBoardImage;
 	
 	CameraOverlay(Context context) {
 		super(context);

@@ -23,6 +23,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -38,21 +39,17 @@ import android.view.ViewGroup;
 class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private final String TAG = "Preview";
 
-    SurfaceView mSurfaceView;
-    SurfaceHolder mHolder;
-    Size mPreviewSize;
-    List<Size> mSupportedPreviewSizes;
-    Camera mCamera;
-    public View mOverlay;
+    private SurfaceView mSurfaceView;
+    private SurfaceHolder mHolder;
+    private Size mPreviewSize;
+    private List<Size> mSupportedPreviewSizes;
+    private Camera mCamera;
 
     Preview(Context context) {
         super(context);
         
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView);
-        
-        mOverlay = new CameraOverlay(context);
-        addView(mOverlay);
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -122,8 +119,6 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 child.layout(0, (height - scaledChildHeight) / 2,
                         width, (height + scaledChildHeight) / 2);
             }
-            
-            mOverlay.layout(0, 0, width, height);
         }
     }
 
@@ -190,4 +185,8 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
         mCamera.setParameters(parameters);
         mCamera.startPreview();
     }
+
+	public void setOneShotPreviewCallback(PreviewCallback processor) {
+		mCamera.setOneShotPreviewCallback(processor);
+	}
 }
